@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hypothesis Generation</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .code-box {
+            background-color: #222;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .code {
+            font-family: monospace;
+            color: white;
+            white-space: pre;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hypothesis Generation</h1>
+
+        <div class="code-box">
+            <h2>Code 1</h2>
+            <div class="code">
+                <code>
+import pandas as pd
+import numpy as np
+
+# To read the data in the CSV file
+data = pd.read_csv("hdata.csv")
+print(data, "n")
+
+# Making an array of all the attributes
+d = np.array(data)[:,:-1]
+print("n The attributes are: ", d)
+
+# Segregating the target that has positive and negative examples
+target = np.array(data)[:,-1]
+print("n The target is: ", target)
+
+# Training function to implement find-s algorithm
+def train(c, t):
+    for i, val in enumerate(t):
+        if val == "Yes":
+            specific_hypothesis = c[i].copy()
+            break
+
+    for i, val in enumerate(c):
+        if t[i] == "Yes":
+            for x in range(len(specific_hypothesis)):
+                if val[x] != specific_hypothesis[x]:
+                    specific_hypothesis[x] = '?'
+                else:
+                    pass
+
+    return specific_hypothesis
+
+# Obtaining the final hypothesis
+print("n The final hypothesis is:", train(d, target))
+                </code>
+            </div>
+        </div>
+
+        <div class="code-box">
+            <h2>Code 2</h2>
+            <div class="code">
+                <code>
+import numpy as np
+import pandas as pd
+
+data = pd.read_csv('h2data.csv')
+concepts = np.array(data.iloc[:,0:-1])
+print("\nInstances are:\n", concepts)
+target = np.array(data.iloc[:,-1])
+print("\nTarget Values are: ", target)
+
+def learn(concepts, target):
+    specific_h = concepts[0].copy()
+    print("\nInitialization of specific_h and general_h")
+    print("\nSpecific Boundary: ", specific_h)
+    general_h = [["?" for i in range(len(specific_h))] for i in range(len(specific_h))]
+    print("\nGeneric Boundary: ", general_h)
+
+    for i, h in enumerate(concepts):
+        print("\nInstance", i+1, "is ", h)
+        if target[i] == "yes":
+            print("Instance is Positive ")
+            for x in range(len(specific_h)):
+                if h[x] != specific_h[x]:
+                    specific_h[x] ='?'
+                    general_h[x][x] ='?'
+
+        if target[i] == "no":
+            print("Instance is Negative ")
+            for x in range(len(specific_h)):
+                if h[x] != specific_h[x]:
+                    general_h[x][x] = specific_h[x]
+                else:
+                    general_h[x][x] = '?'
+
+        print("Specific Boundary after ", i+1, "Instance is ", specific_h)
+        print("Generic Boundary after ", i+1, "Instance is ", general_h)
+        print("\n")
+
+    indices = [i for i, val in enumerate(general_h) if val == ['?', '?', '?', '?', '?', '?']]
+    for i in indices:
+        general_h.remove(['?', '?', '?', '?', '?', '?'])
+    return specific_h, general_h
+
+s_final, g_final = learn(concepts, target)
+
+print("Final Specific_h: ", s_final, sep="\n")
+print("Final General_h: ", g_final, sep="\n")
+                </code>
+            </div>
+        </div>
+        <div class="code-box">
+            <h2>Code 3</h2>
+            <div class="code">
+                <code>
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+
+col_names=['pregnant','glucose','bp','shin','insulin','bmi','pedigree','age','label']
+pima = pd.read_csv("pima-indians-diabetes.csv", header = None, names = col_names)
+pima.head( )
+pima.sample( )
+pima.tail( )
+#split dataset in feature and target variable
+feature_cols=['pregnant','insulin','bmi','age','glucose','bp','pedigree']
+X=pima[feature_cols]# Feature
+Y=pima.label # target variable
+
+# split dataset inti training set and test set
+X_train, X_test, Y_train, Y_test = train_test_split(X,Y,test_size = 0.3,random_state=1)# 70% training and 30% testing
+
+# crete decision tree classifier object
+clf = DecisionTreeClassifier()
+
+# train decision tree classifier
+clf =clf.fit(X_train,Y_train)
+
+# predict the response for the test dataset
+Y_pred = clf.predict(X_test)
+
+# Model Accuracy, how often is the classifier correct?
+print("Accuracy:",metrics.accuracy_score(Y_test, Y_pred))
+</code>
+</div>
+</div>
+
+    </div>
+</body>
+</html>
